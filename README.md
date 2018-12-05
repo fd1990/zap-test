@@ -8,4 +8,6 @@ They are all already written to my <first initial><last name> schema. Hence the 
   
 I have commented logic within the files to explain my working.  
 
-Visualisations were done in Tableau. Graphs/findings/recommendations are in the .pdf file that is shared. 
+Visualisations were done in Tableau. Can share a workbook is useful; I connected directly to the tables I created in my <first initial><last name> schema.
+
+Graphs/findings/recommendations are in the .pdf file that is shared. 
