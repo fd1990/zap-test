@@ -24,11 +24,11 @@ DROP TABLE fdevlin.user_monthly_active_dates;
 CREATE TABLE fdevlin.user_monthly_active_dates AS 
 (
 SELECT user_id
-	,d.day_date 	as active_date 
-	,1 				as is_active
+	,d.day_date 											as active_date 
+	,1 												as is_active
 	,lead(active_date, 1) over (partition by user_id order by active_date asc) - active_date	as diff_next_active_date
-	,row_number() over (partition by user_id order by active_date desc) 						as row_num_inv
-	,row_number() over (partition by user_id order by active_date asc) 							as row_num
+	,row_number() over (partition by user_id order by active_date desc) 				as row_num_inv
+	,row_number() over (partition by user_id order by active_date asc) 				as row_num
 	,'2017-06-02' - active_date 																as diff_from_end_of_period
 FROM source_data.tasks_used_da da
 LEFT JOIN fdevlin.date_join_table d ON d.day_date <= da.date + interval '28 days' -- generate an "active" date for that day and the 28 days following
@@ -47,8 +47,8 @@ CREATE TABLE fdevlin.user_monthly_churn_dates AS
 
 WITH first_churn_date as (
 SELECT user_id
-	,1 				as is_churn
-	,row_num 		as active_days_before_churn
+	,1 		as is_churn
+	,row_num 	as active_days_before_churn
 	,active_date	as last_active_date
 	,COALESCE(diff_next_active_date, diff_from_end_of_period) - 1 as max_churn_period -- we add the "-1" to the diff_next_active to get days between active dates rather than days until the next active date
 FROM fdevlin.user_monthly_active_dates ua
@@ -88,17 +88,17 @@ WITH union_data as -- create a union of user,date pairs to indicate when each us
 select user_id
 	,active_date 	as date 
 	,is_active
-	,row_num 		as active_day
-	,0 				as is_churn
-	,NULL 			as active_days_before_churn
+	,row_num 	as active_day
+	,0 		as is_churn
+	,NULL 		as active_days_before_churn
 from fdevlin.user_monthly_active_dates
 
 union 
 
 select user_id
 	,churn_date 	as date 
-	,0 				as is_active
-	,NULL 			as active_day
+	,0 		as is_active
+	,NULL 		as active_day
 	,is_churn
 	,active_days_before_churn
 from fdevlin.user_monthly_churn_dates
@@ -106,9 +106,9 @@ from fdevlin.user_monthly_churn_dates
 order by 1,3)
 
 select date
-	,sum(is_active) 															as MAU -- summing all users active on that day
-	,sum(case when active_day = 1 then is_active end) 							as new_MAU -- summing all users active on that day for the first time (active day = 1)
-	,sum(is_churn) 																as churn -- summing all users who count as churn on that day
+	,sum(is_active) 								as MAU -- summing all users active on that day
+	,sum(case when active_day = 1 then is_active end) 				as new_MAU -- summing all users active on that day for the first time (active day = 1)
+	,sum(is_churn) 									as churn -- summing all users who count as churn on that day
 	,sum(case when active_days_before_churn <= 29 then is_churn else 0 end) 	as quick_churn -- summing all users who count as churn on that day who were only active for one period 
 from union_data ud
 group by 1 -- grouped by day
@@ -141,9 +141,9 @@ WITH user_dim as (select
 from fdevlin.user_monthly_active_dates 
 where row_num = 1)
 
-SELECT date(date_trunc('month',ud.first_active_date)) as month_first_active
-	,da.date - first_active_date as days_since_active
-	,COUNT(DISTINCT da.user_id) as number_users_active
+SELECT date(date_trunc('month',ud.first_active_date)) 	as month_first_active
+	,da.date - first_active_date 			as days_since_active
+	,COUNT(DISTINCT da.user_id) 			as number_users_active
 FROM source_data.tasks_used_da da
 LEFT JOIN user_dim ud on da.user_id = ud.user_id
 WHERE days_since_active <= 28
@@ -151,5 +151,3 @@ WHERE days_since_active <= 28
 GROUP BY 1,2
 ORDER BY 1,2
 ; 
-
-
