@@ -1,4 +1,4 @@
-### Take home test read me
+### README
 
 The file labelled SQL_scripts.sql has the queries I used to generate the final data models used for the analyis. 
 
