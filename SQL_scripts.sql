@@ -47,10 +47,10 @@ CREATE TABLE fdevlin.user_monthly_churn_dates AS
 
 WITH first_churn_date as (
 SELECT user_id
-	,1 		as is_churn
-	,row_num 	as active_days_before_churn
-	,active_date	as last_active_date
-	,COALESCE(diff_next_active_date, diff_from_end_of_period) - 1 as max_churn_period -- we add the "-1" to the diff_next_active to get days between active dates rather than days until the next active date
+	,1 								as is_churn
+	,row_num 							as active_days_before_churn
+	,active_date							as last_active_date
+	,COALESCE(diff_next_active_date, diff_from_end_of_period) - 1 	as max_churn_period -- we add the "-1" to the diff_next_active to get days between active dates rather than days until the next active date
 FROM fdevlin.user_monthly_active_dates ua
 WHERE diff_next_active_date > 1 -- we either look for dates where there is a gap from one active date to the next..
 	OR (row_num_inv = 1 and diff_from_end_of_period > 1) -- ..or when the last active date is before the end of the time period
