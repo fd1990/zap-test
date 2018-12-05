@@ -1,3 +1,10 @@
 # Take home test 
 
-Run part 2 of the sql file in your chosen redshift client. Part 1 is showing some workings I did to check the structure of the data. 
+The file labelled SQL_scripts.sql has the queries I used to generate the final data models used for the analyis. 
+
+There are 6 tables generated; some are tables that I used to build the final models. I decided to separate out the table generation to maintain tables might be useful for other future analysis. 
+
+They are all already written to my <first initial><last name> schema. Hence the DROP TABLE command at the start of each table. 
+  
+I have commented logic within the files to explain my working.  
+  
